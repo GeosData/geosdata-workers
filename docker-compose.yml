@@ -1,4 +1,19 @@
 services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - umami
+      - uptime-kuma
+
   redis:
     image: redis:7-alpine
     container_name: redis
@@ -24,8 +39,6 @@ services:
     image: ghcr.io/umami-software/umami:postgresql-latest
     container_name: umami
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     environment:
       DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD}@umami-db:5432/umami
       APP_SECRET: ${UMAMI_APP_SECRET}
@@ -36,8 +49,6 @@ services:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
     restart: unless-stopped
-    ports:
-      - "3001:3001"
     volumes:
       - kuma_data:/app/data
 
@@ -45,3 +56,5 @@ volumes:
   redis_data:
   umami_db_data:
   kuma_data:
+  caddy_data:
+  caddy_config:

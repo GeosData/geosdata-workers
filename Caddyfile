@@ -1,0 +1,7 @@
+analytics.geosdata.com {
+	reverse_proxy umami:3000
+}
+
+status.geosdata.com {
+	reverse_proxy uptime-kuma:3001
+}
