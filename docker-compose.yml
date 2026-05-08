@@ -11,7 +11,6 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - umami
       - uptime-kuma
 
   redis:
@@ -24,27 +23,6 @@ services:
     volumes:
       - redis_data:/data
 
-  umami-db:
-    image: postgres:16-alpine
-    container_name: umami-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: umami
-      POSTGRES_USER: umami
-      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD}
-    volumes:
-      - umami_db_data:/var/lib/postgresql/data
-
-  umami:
-    image: ghcr.io/umami-software/umami:postgresql-latest
-    container_name: umami
-    restart: unless-stopped
-    environment:
-      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD}@umami-db:5432/umami
-      APP_SECRET: ${UMAMI_APP_SECRET}
-    depends_on:
-      - umami-db
-
   uptime-kuma:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
@@ -54,7 +32,6 @@ services:
 
 volumes:
   redis_data:
-  umami_db_data:
   kuma_data:
   caddy_data:
   caddy_config:
